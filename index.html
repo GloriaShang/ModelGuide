@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathematical Modeling — Model Reference</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F8F7F4;--card:#FFFFFF;--border:#E0DBD5;--text:#1A1714;
+  --muted:#7A7570;--navy:#1A2B4A;--hover:#F0EDE8;
+  --c1:#1E5FAD;--c1l:#E6F1FB;
+  --c2:#5B3FA0;--c2l:#EEEDFE;
+  --c3:#0D7A6A;--c3l:#E1F5EE;
+  --c4:#C47A1A;--c4l:#FAEEDA;
+  --c5:#993C1D;--c5l:#FAECE7;
+  --c6:#1B6B42;--c6l:#EAF3DE;
+}
+body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);padding:28px 20px 80px}
+
+.hdr{text-align:center;margin-bottom:28px}
+.hdr h1{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.hdr p{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+.filters{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.filter-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);
+  background:var(--card);font-size:12px;font-family:'JetBrains Mono',monospace;
+  cursor:pointer;transition:all .15s;color:var(--muted)}
+.filter-btn:hover{border-color:var(--navy);color:var(--navy)}
+.filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.sections{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+
+/* category */
+.cat-section{background:var(--card);border-radius:12px;border:1.5px solid var(--border);overflow:hidden}
+.cat-header{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;
+  border-bottom:1px solid var(--border);user-select:none}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-title{font-size:15px;font-weight:700;color:var(--text)}
+.cat-count{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1px 8px}
+.cat-sub{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;
+  margin-left:auto;padding-right:8px;display:none}
+@media(min-width:700px){.cat-sub{display:block}}
+.cat-arrow{font-size:11px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.cat-section.collapsed .cat-arrow{transform:rotate(-90deg)}
+.cat-body{padding:12px 16px 16px}
+.cat-section.collapsed .cat-body{display:none}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.model-card{border-radius:8px;border:1.5px solid var(--border);background:var(--bg);
+  cursor:pointer;transition:all .18s;overflow:hidden}
+.model-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.model-card.open{border-color:var(--ac);background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.10)}
+.card-top{padding:10px 13px;display:flex;align-items:flex-start;gap:10px}
+.card-bar{width:4px;min-height:36px;border-radius:2px;flex-shrink:0;background:var(--ac)}
+.card-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.35}
+.card-tag{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:3px;
+  margin-top:4px;display:inline-block;background:var(--acl);color:var(--ac)}
+.card-diff{font-size:9px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.star-on{color:#C47A1A}
+.star-off{color:#D0CBC4}
+
+/* detail panel */
+.detail-panel{display:none;margin-top:12px;border-radius:10px;
+  border:1.5px solid var(--border);background:var(--card);overflow:hidden}
+.detail-panel.open{display:block}
+
+.dp-hero{padding:14px 18px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;gap:12px}
+.dp-bar{width:5px;height:48px;border-radius:3px;flex-shrink:0}
+.dp-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.dp-tag{font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;
+  border-radius:4px;display:inline-block;background:var(--acl);color:var(--ac)}
+.dp-close{margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;
+  color:var(--muted);cursor:pointer;padding:5px 12px;border-radius:6px;
+  border:1px solid var(--border);background:var(--bg);flex-shrink:0;white-space:nowrap}
+.dp-close:hover{background:var(--hover);color:var(--text)}
+
+.dp-grid{display:grid;gap:0}
+.dp-grid.two{grid-template-columns:1fr 1fr}
+.dp-grid.one{grid-template-columns:1fr}
+@media(max-width:700px){.dp-grid.two{grid-template-columns:1fr}}
+
+.dp-block{padding:13px 16px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dp-block:last-child{border-right:none}
+.dp-block.full{border-right:none}
+.dp-lbl{font-size:9.5px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.dp-lbl::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac);flex-shrink:0}
+.dp-txt{font-size:12px;color:var(--text);line-height:1.75}
+.dp-txt li{margin-left:14px;margin-bottom:2px}
+
+.formula{background:#F0F2F5;border-radius:6px;padding:10px 13px;margin-top:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#1A2B4A;
+  line-height:1.75;white-space:pre-wrap}
+
+.code-pill{display:inline-block;background:#1E2D3D;color:#A8D8A8;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:3px 8px;border-radius:4px;margin:2px 3px 0 0;line-height:1.4}
+
+.warn{padding:12px 15px;background:#FFF8EC;border-left:3px solid #C47A1A;
+  font-size:11.5px;color:#7A4A00;line-height:1.75;border-bottom:1px solid var(--border)}
+.warn b{font-weight:600}
+.good{padding:12px 15px;background:#F0FBF5;border-left:3px solid #1B6B42;
+  font-size:11.5px;color:#1B4A2A;line-height:1.75}
+.good b{font-weight:600}
+
+.tip{text-align:center;margin-top:24px;font-size:11px;color:var(--muted);
+  font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>Mathematical Modeling — Model Reference</h1>
+  <p>// click any model card to expand · filter by problem type</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter(0,this)">预测 Prediction</button>
+  <button class="filter-btn" onclick="setFilter(1,this)">分类 Classification</button>
+  <button class="filter-btn" onclick="setFilter(2,this)">统计分析 Statistics</button>
+  <button class="filter-btn" onclick="setFilter(3,this)">评价 Evaluation</button>
+  <button class="filter-btn" onclick="setFilter(4,this)">优化 Optimization</button>
+  <button class="filter-btn" onclick="setFilter(5,this)">动态系统 Dynamics</button>
+</div>
+
+<div class="sections" id="sections"></div>
+<div class="tip">// click category header to collapse · click card again to close</div>
+
+<script>
+const CATS = [
+  { key:"预测 Prediction", color:"#1E5FAD", lt:"#E6F1FB",
+    desc:"Keywords: predict, estimate, trend, future value",
+    models:[
+      { name:"线性回归", tag:"Regression", diff:2,
+        when:["自变量与因变量呈线性关系","特征数量较少（< 10 列）","需要解释各因素的影响程度","作为复杂模型的基线对比"],
+        example:"预测城市房价；分析广告投入与销量；估计 GDP 与各指标的关联",
+        formula:"目标：min Σ(yᵢ - ŷᵢ)²\n预测：ŷ = β₀ + β₁x₁ + ... + βₙxₙ\n系数：β = (XᵀX)⁻¹Xᵀy\nR² = 1 - SS_res / SS_tot  （越接近1越好）\n调整R²：1 - (1-R²)(n-1)/(n-p-1)",
+        tools:["sklearn.linear_model.LinearRegression","statsmodels.api.OLS  （含p值和置信区间）","sklearn.linear_model.Ridge  （L2正则）"],
+        paper:"需报告：各系数值及显著性（p<0.05）、R²和调整R²、残差分布图、F检验结果。建议用 statsmodels 而非 sklearn，前者自动输出统计检验。",
+        mistakes:["不检验线性假设——先画散点图确认","不做多重共线性检验——计算VIF，VIF>10需处理","用sklearn丢失p值——改用statsmodels","训练集R²=0.99就满意——检查测试集防止过拟合"],
+        good:"满足 LINE 假设时效果最好；残差图呈随机分布是健康迹象；结果可解释是最大优势" },
+
+      { name:"ARIMA 时间序列", tag:"Time Series", diff:3,
+        when:["数据按时间顺序排列，有内在时序结构","要预测未来若干时间步","数据有趋势或自相关性","样本量 ≥ 50 个时间点"],
+        example:"预测未来12个月销售量；预测月均气温；预测电力负荷",
+        formula:"ARIMA(p, d, q)：\np = AR阶数：yₜ与过去p个值的关系\nd = 差分次数：消除趋势使序列平稳\nq = MA阶数：yₜ与过去q个残差的关系\n平稳检验：ADF，p < 0.05 为平稳\n定阶依据：PACF截尾→p；ACF截尾→q\nAIC / BIC 越小越好",
+        tools:["statsmodels.tsa.arima.model.ARIMA","pmdarima.auto_arima  （自动定阶）","statsmodels.tsa.seasonal.SARIMAX  （季节性）"],
+        paper:"需报告：ADF检验结果（证明平稳）、ACF/PACF图（定阶依据）、AIC/BIC选模、预测置信带（95%）、MAE和RMSE误差。",
+        mistakes:["跳过平稳性检验直接建模","不用 auto_arima 而是随意猜 p,q","只报训练集误差——必须留测试集验证","有季节性却不用 SARIMA"],
+        good:"适合有明显时序规律的数据；与 STL 分解结合（趋势+季节+残差）效果更好" },
+
+      { name:"灰色预测 GM(1,1)", tag:"Small Sample", diff:2,
+        when:["样本量极少（4～20条）","数据大致单调递增","缺乏完整历史数据","短期预测（3～5步以内）"],
+        example:"基于近5年数据预测未来3年能源消耗；小城市人口短期预测",
+        formula:"① 一次累加生成（AGO）：x⁽¹⁾ₖ = Σx⁽⁰⁾ᵢ\n② 建立微分方程：dx⁽¹⁾/dt + ax⁽¹⁾ = b\n③ 最小二乘估计参数 a, b\n④ 还原预测值：x̂⁽⁰⁾ₖ = x̂⁽¹⁾ₖ - x̂⁽¹⁾ₖ₋₁\n精度检验：\n  后验差比值 C < 0.35 为优\n  小误差概率 P > 0.95 为优",
+        tools:["手写约40行代码","scipy.linalg.lstsq  （求参数）","grey 库 / greykit 库"],
+        paper:"需报告：后验差比值C和小误差概率P（必须）、预测值与实际值对比表、误差分析。必须说明数据满足准指数律（单调递增）。",
+        mistakes:["数据非单调递增强行用——结果会很差","预测步数 >5 步——误差急剧累积","忘做精度检验——C和P是必须汇报的","数据量够时仍用GM——换ARIMA"],
+        good:"小样本场景的有效方法；代码简单；数据量多时改用 ARIMA 或机器学习" },
+
+      { name:"随机森林回归", tag:"Ensemble", diff:3,
+        when:["特征多、关系非线性","不想手动调参","需要特征重要性排名","作为稳健的基线模型"],
+        example:"房价预测；医疗费用估计；零售销量预测",
+        formula:"集成 T 棵决策树（Bagging）：\n每棵树从 √p 个随机特征中选分裂点\n预测：ŷ = (1/T)Σhₜ(x)\n特征重要性：基于不纯度减少量（MSE）\nOOB误差：袋外样本自动提供验证误差",
+        tools:["sklearn.ensemble.RandomForestRegressor","model.feature_importances_  （特征重要性）","sklearn.inspection.permutation_importance"],
+        paper:"论文必须展示特征重要性柱状图；报告OOB误差；与线性回归对比说明集成优势；报告 n_estimators 选取依据。",
+        mistakes:["不展示特征重要性——浪费最大优势","n_estimators 太小（<100）——结果不稳定","不限制树深度——max_depth控制过拟合","忽视类别不平衡"],
+        good:"对噪声和缺失值鲁棒；不需要归一化；特征重要性图是论文亮点" },
+
+      { name:"XGBoost / LightGBM", tag:"Boosting", diff:4,
+        when:["数据量 > 5000 行","特征较多（10～100列）","关系非线性且复杂","追求预测精度"],
+        example:"电商销量预测；用户流失预测；信贷违约概率估计",
+        formula:"梯度提升：F(x) = Σfₜ(x)，每棵树拟合上一轮残差\n正则化：Ω(f) = γT + ½λ||w||²\n（T=叶子数，w=叶子权重）\nLightGBM 改进：\n  按梯度绝对值排序抽样（GOSS）\n  互斥特征捆绑（EFB）",
+        tools:["xgboost.XGBRegressor / XGBClassifier","lightgbm.LGBMRegressor / LGBMClassifier","sklearn.model_selection.GridSearchCV  （调参）","shap  （可解释性分析）"],
+        paper:"需报告：超参数调优过程（学习率、树深度、子样本率）、特征重要性图、交叉验证曲线、与基线模型的对比。用SHAP值解释特征贡献。",
+        mistakes:["不调参直接用默认——可能严重过拟合","不处理缺失值","只看训练误差——必须交叉验证","论文无法解释——用SHAP库"],
+        good:"竞赛中表现最优的方法之一；用SHAP库输出特征贡献图解决可解释性问题" },
+    ]
+  },
+  { key:"分类 Classification", color:"#5B3FA0", lt:"#EEEDFE",
+    desc:"Keywords: classify, identify, belong to category, is/not",
+    models:[
+      { name:"逻辑回归", tag:"Binary / Multi-class", diff:2,
+        when:["二分类或多分类问题","要求输出概率值","需要解释各特征的影响","作为基线模型"],
+        example:"预测患者是否患病；判断邮件是否垃圾邮件；信贷违约概率",
+        formula:"Sigmoid：p = 1/(1+e⁻ᶻ)，z = β₀+Σβᵢxᵢ\n损失：L = -Σ[ylog(p)+(1-y)log(1-p)]\n多分类：Softmax p_k = e^zₖ/Σe^zⱼ\n系数解释：e^βᵢ 为第i个特征的优势比（Odds Ratio）",
+        tools:["sklearn.linear_model.LogisticRegression","statsmodels.api.Logit  （含p值）","sklearn.metrics.classification_report","sklearn.metrics.roc_auc_score"],
+        paper:"需报告：各系数的优势比和显著性、ROC曲线和AUC值、混淆矩阵（精确率、召回率、F1）、类别不平衡时的处理方法。",
+        mistakes:["类别严重不平衡不处理——加 class_weight='balanced'","只看准确率——不平衡时准确率误导性强，看AUC","多分类忘设 multi_class='multinomial'","不做显著性检验——用 statsmodels.Logit"],
+        good:"可解释性强；输出的概率值可用于风险分级；计算速度快，适合快速验证" },
+
+      { name:"随机森林分类", tag:"Ensemble", diff:3,
+        when:["特征多，不确定哪些重要","数据有噪声或缺失值","需要特征重要性排名","需要稳健的基线模型"],
+        example:"疾病诊断；信用评级；客户流失预测；故障识别",
+        formula:"T棵决策树投票：ŷ = mode{hₜ(x)}\n每棵树随机选 √p 个特征\nGini不纯度：G = 1-Σpₖ²\n特征重要性：Gini减少量的平均值\nOOB error：袋外样本提供无偏估计",
+        tools:["sklearn.ensemble.RandomForestClassifier","model.feature_importances_","sklearn.inspection.permutation_importance","imblearn.over_sampling.SMOTE  （类别不平衡）"],
+        paper:"必须展示特征重要性柱状图；报告OOB误差；与单棵决策树对比；类别不平衡时说明处理方法（SMOTE / class_weight）。",
+        mistakes:["不展示特征重要性","类别不平衡不处理","n_estimators 太小（<100）","不限制树深度导致过拟合"],
+        good:"对噪声和异常值鲁棒；不需要归一化；特征重要性图是论文必备亮点" },
+
+      { name:"SVM 支持向量机", tag:"Small Sample", diff:3,
+        when:["样本量不大（< 5000）","高维特征空间","类别边界相对清晰","二分类为主"],
+        example:"文本分类；基因表达数据分类；图像特征分类",
+        formula:"最大化分类间隔：min ½||w||²\n约束：yᵢ(wᵀxᵢ+b) ≥ 1\n软间隔：min ½||w||² + C·Σξᵢ\n核函数：\n  RBF：K=exp(-γ||x-z||²)\n  多项式：K=(xᵀz+c)ᵈ\n支持向量：只有边界附近的点影响决策边界",
+        tools:["sklearn.svm.SVC","sklearn.svm.LinearSVC  （大数据集）","GridSearchCV  调 C 和 gamma","sklearn.preprocessing.StandardScaler  （必须先标准化）"],
+        paper:"需报告：核函数选择依据、C和gamma调优过程（网格搜索图）、支持向量数量、与其他分类器对比实验。",
+        mistakes:["特征不标准化——SVM对量纲极度敏感","大数据集用SVC——改用LinearSVC","C和gamma用默认值——必须交叉验证调参","多分类忘设 decision_function_shape='ovr'"],
+        good:"高维小样本场景下往往优于深度学习；核技巧使其能处理非线性问题" },
+
+      { name:"k-means 聚类", tag:"Unsupervised", diff:2,
+        when:["无标注数据，要发现自然分组","探索数据内在结构","将样本分为若干有意义的类别","配合其他分析使用"],
+        example:"客户群体分析；城市功能区划分；基因表达模式发现",
+        formula:"目标：min Σₖ Σᵢ∈Cₖ ||xᵢ - μₖ||²\n步骤：\n① 随机初始化k个质心\n② 分配每个点到最近质心\n③ 更新质心为各簇均值\n④ 重复②③至收敛\n评估：轮廓系数 s=(b-a)/max(a,b)，[-1,1]",
+        tools:["sklearn.cluster.KMeans","sklearn.metrics.silhouette_score  （轮廓系数）","sklearn.cluster.DBSCAN  （非球形簇）","sklearn.decomposition.PCA  （降维后可视化）"],
+        paper:"必须说明k的选取方法（肘部法则图+轮廓系数）；各簇特征分布箱线图；为每个簇命名（业务解释）；PCA降维后2D可视化聚类结果。",
+        mistakes:["k值随意决定——必须用肘部法则或轮廓系数","不解释各簇实际含义——聚类完不解读等于没做","对量纲敏感不归一化","非球形分布用k-means——改用DBSCAN"],
+        good:"简单高效；结果直观；与 TOPSIS/AHP 结合可做分类后再评价" },
+    ]
+  },
+  { key:"统计分析 Statistics", color:"#0D7A6A", lt:"#E1F5EE",
+    desc:"Keywords: influence factors, test difference, correlation, significance",
+    models:[
+      { name:"相关分析", tag:"Correlation", diff:1,
+        when:["探索变量之间是否有线性关系","EDA阶段初步筛选特征","找出可能的多重共线性","判断是否需要处理相关特征"],
+        example:"分析PM2.5与气温、风速、湿度的相关性；探索经济指标间关联",
+        formula:"Pearson（正态数据）：\n  r = Σ(xᵢ-x̄)(yᵢ-ȳ) / √[Σ(xᵢ-x̄)²Σ(yᵢ-ȳ)²]\n强弱判断：|r|>0.7强，>0.4中，<0.2弱\nSpearman（非正态/序列）：基于秩次\n显著性：t = r√(n-2)/√(1-r²)，查t分布表",
+        tools:["df.corr()  （Pearson）","df.corr(method='spearman')","scipy.stats.pearsonr  （含p值）","seaborn.heatmap  （热力图可视化）"],
+        paper:"必放相关性热力图（annot=True显示数值）；标注显著性（* p<0.05，** p<0.01）；明确说明用Pearson还是Spearman及原因；指出强相关特征对（|r|>0.7）。",
+        mistakes:["相关高就认为有因果——相关≠因果","不做显著性检验——高相关但n小可能只是偶然","正态性未检验直接用Pearson——非正态用Spearman","热力图不标注数值"],
+        good:"最简单的探索性分析工具；热力图是论文数据分析部分的标配" },
+
+      { name:"假设检验", tag:"Significance Test", diff:3,
+        when:["比较两组或多组是否有显著差异","验证结论是否统计显著","评估处理/干预效果","检验模型假设是否成立"],
+        example:"比较两种方案效果；验证男女收入是否显著不同；AB测试效果检验",
+        formula:"t检验（两组均值）：\n  t = (x̄₁-x̄₂)/√(s₁²/n₁+s₂²/n₂)\nANOVA（多组）：F = MS_between/MS_within\n卡方（类别）：χ² = Σ(O-E)²/E\n决策：p < 0.05 → 拒绝H₀（显著差异）\n效应量：Cohen's d = (μ₁-μ₂)/σ_pooled",
+        tools:["scipy.stats.ttest_ind  （独立样本t检验）","scipy.stats.ttest_rel  （配对样本）","scipy.stats.f_oneway  （单因素ANOVA）","scipy.stats.chi2_contingency  （卡方）","scipy.stats.shapiro  （正态性检验）"],
+        paper:"需报告：检验方法选择依据（正态性检验结果）、t/F/χ²统计量和p值、效应量（不只是p值）、置信区间。",
+        mistakes:["跳过正态性检验——非正态用Mann-Whitney U","多重比较不校正——Bonferroni校正","只报p值不报效应量——效应量衡量实际差异大小","方差不齐用标准t——用Welch's t检验"],
+        good:"统计显著性是论文结论可信度的重要依据；p值+效应量+置信区间三者结合才完整" },
+
+      { name:"多元回归分析", tag:"Factor Analysis", diff:3,
+        when:["分析多个因素对结果的影响方向和程度","建立预测模型同时解释机制","要求输出系数显著性"],
+        example:"分析经济因素对碳排放的影响；研究多因素对学习成绩的贡献",
+        formula:"Y = β₀ + β₁X₁ + ... + βₚXₚ + ε\nOLS：β̂ = (XᵀX)⁻¹XᵀY\n调整R²：1-(1-R²)(n-1)/(n-p-1)\nVIF（多重共线性）：VIF_j = 1/(1-Rⱼ²)\nVIF > 10 → 严重共线性",
+        tools:["statsmodels.api.OLS  （推荐，含完整统计输出）","statsmodels.formula.api.ols  （公式API）","patsy  （设计矩阵构建）"],
+        paper:"需报告完整回归表（系数、标准误、t值、p值、置信区间）；R²和调整R²；F检验；VIF值；残差分析图（4图）。",
+        mistakes:["用sklearn丢失显著性检验——用statsmodels","不检验共线性——VIF>10时降维或删变量","系数未标准化就比较重要性","残差分析省略"],
+        good:"数模中最常用的统计工具；statsmodels一键输出完整回归表，论文直接用" },
+
+      { name:"PCA 主成分分析", tag:"Dimensionality Reduction", diff:3,
+        when:["特征列太多（>20列）","特征之间高度相关","需要可视化高维数据","作为其他模型的预处理"],
+        example:"将50个经济指标降为3个主成分；高维基因数据可视化",
+        formula:"协方差矩阵：C = XᵀX/(n-1)\n特征值分解：C = QΛQᵀ\n主成分：Z = XQ  （按特征值从大到小）\n方差解释率：λₖ/Σλᵢ\n选取标准：累计解释率 ≥ 85%",
+        tools:["sklearn.decomposition.PCA","PCA(n_components=0.95)  （保留95%方差）","matplotlib 画碎石图（Scree Plot）","StandardScaler  （PCA前必须标准化）"],
+        paper:"需报告：碎石图（Scree Plot）、各主成分方差解释率和累计解释率、载荷矩阵（主成分含义解释）、降维后散点图。",
+        mistakes:["PCA前不标准化——量纲大的变量主导主成分","不解释主成分含义","用于分类任务——PCA是无监督，分类用LDA","n_components选太多失去降维意义"],
+        good:"与聚类、回归配合效果极好；2D/3D散点图是论文可视化亮点" },
+    ]
+  },
+  { key:"评价 Evaluation", color:"#C47A1A", lt:"#FAEEDA",
+    desc:"Keywords: evaluate, rank, select best, multi-indicator, weight",
+    models:[
+      { name:"层次分析法 AHP", tag:"Subjective Weight", diff:3,
+        when:["指标体系有层次结构（目标-准则-指标）","需要专家主观判断确定权重","指标难以客观量化比较","与TOPSIS配合使用"],
+        example:"评价城市可持续发展；选择最优物流方案；评估高校综合实力",
+        formula:"构造两两比较矩阵 A（n×n）\naᵢⱼ：指标i相对于j的重要程度（1-9标度）\n归一化权重：wᵢ = (Πaᵢⱼ)^(1/n) / Σ(Πaᵢⱼ)^(1/n)\n一致性检验：\n  CI = (λmax-n)/(n-1)\n  CR = CI/RI  （RI查表）\n  CR < 0.1 → 通过检验",
+        tools:["numpy 矩阵运算（手写约50行）","ahpy 库","scipy.linalg.eig  （求最大特征值）"],
+        paper:"必须展示：判断矩阵、一致性检验（CI、RI、CR值）、权重向量。权重和必须为1，CR≥0.1需重新判断并说明。",
+        mistakes:["不做一致性检验——CR是必须汇报的核心","n>9时仍用——规模大结果不可靠","权重和不为1——计算有误","aᵢⱼ·aⱼᵢ≠1——违反互反性"],
+        good:"与TOPSIS是数模评价类的黄金组合；AHP定权重，TOPSIS做排序" },
+
+      { name:"TOPSIS", tag:"Ranking", diff:2,
+        when:["有多个备选方案和多个指标","已有权重（来自AHP或熵权法）","需要给出方案排序","指标分效益型和成本型"],
+        example:"城市环境质量排名；供应商优选；医疗方案评估",
+        formula:"① 标准化：rᵢⱼ = xᵢⱼ/√(Σxᵢⱼ²)\n② 加权：vᵢⱼ = wⱼ·rᵢⱼ\n③ 正理想解 A⁺（效益取max，成本取min）\n   负理想解 A⁻（效益取min，成本取max）\n④ 距离：Sᵢ⁺=√Σ(vᵢⱼ-vⱼ⁺)²\n⑤ 贴近度：Cᵢ=Sᵢ⁻/(Sᵢ⁺+Sᵢ⁻)，越大越好",
+        tools:["numpy 手写（约30行代码）","pandas 配合处理数据"],
+        paper:"需展示：标准化矩阵、加权矩阵、正负理想解、各方案贴近度、最终排名。贴近度柱状图很直观。",
+        mistakes:["效益型和成本型指标混淆——正理想解取法相反","不加权直接用等权","标准化方法混用","贴近度相近时不做敏感性分析"],
+        good:"代码实现简单；结果直观；搭配雷达图可视化效果极佳；几乎所有评价类题目都可用" },
+
+      { name:"熵权法", tag:"Objective Weight", diff:2,
+        when:["不依赖主观判断","有充足的客观数据","指标变异程度差异大","与TOPSIS配合使用"],
+        example:"客观评价各省营商环境；基于历史数据的指标客观赋权",
+        formula:"① 标准化：pᵢⱼ = xᵢⱼ/Σxᵢⱼ\n② 信息熵：Eⱼ = -k·Σpᵢⱼ·ln(pᵢⱼ)，k=1/ln(n)\n③ 差异系数：gⱼ = 1-Eⱼ\n④ 权重：wⱼ = gⱼ/Σgⱼ\n熵值越小 → 变异越大 → 权重越大",
+        tools:["numpy / pandas（手写约20行）","注意：pᵢⱼ=0时ln(0)报错，加微小值 ε=1e-10"],
+        paper:"需展示：各指标熵值和权重对比表；说明权重分配合理性（变异大权重高）；与等权重结果对比。",
+        mistakes:["数据未归一化直接算——量纲影响极大","pᵢⱼ=0时报错——加微小扰动ε","极差小的指标权重虚高——结合专家意见修正","完全依赖熵权——建议与AHP组合赋权"],
+        good:"客观性强；与AHP组合（组合权重）既有主观依据又有数据支撑，是评价类加分项" },
+
+      { name:"模糊综合评价", tag:"Fuzzy Evaluation", diff:4,
+        when:["评价指标存在模糊性（优/良/中/差）","边界不清晰的定性指标","需要将定性指标量化","多层次评价体系"],
+        example:"空气质量等级评价；服务满意度综合评估；环境影响评价",
+        formula:"① 建立指标集 U 和评语集 V\n② 构造隶属度矩阵 R\n   （每个指标对各等级的隶属度）\n③ 模糊变换：B = W·R\n   （W为权重行向量）\n④ 归一化后取最大隶属度判定等级\n常用隶属函数：三角形、梯形、高斯型",
+        tools:["numpy 矩阵运算","手写隶属度函数","skfuzzy 库"],
+        paper:"需展示：评语集和等级划分标准、隶属度函数图、模糊关系矩阵、综合评价向量。必须说明隶属度函数的选取依据。",
+        mistakes:["隶属函数随意选取——需有理论或专家依据","不说明最终等级判定规则","权重不经检验就代入","评语集等级划分不合理"],
+        good:"适合定性指标较多的评价场景；与AHP结合确定权重；隶属度函数设计可作为创新点" },
+    ]
+  },
+  { key:"优化 Optimization", color:"#993C1D", lt:"#FAECE7",
+    desc:"Keywords: optimal, maximize, minimize, schedule, allocate, plan",
+    models:[
+      { name:"线性规划 LP", tag:"Continuous Optimization", diff:2,
+        when:["目标函数和全部约束都是线性","决策变量是连续值","有明确目标和约束条件","数模中最基础的优化模型"],
+        example:"最优生产计划（利润最大）；最低成本运输；饮食搭配问题",
+        formula:"标准形式：\n  min/max  cᵀx\n  s.t.     Ax ≤ b，x ≥ 0\n对偶理论：每个约束对应一个对偶变量\n影子价格：约束放宽1单位时目标函数的改善量\n灵敏度分析：系数在什么范围内最优解不变",
+        tools:["scipy.optimize.linprog","PuLP  （更直观的建模语言）","CVXPY  （凸优化框架）"],
+        paper:"需展示：决策变量定义、目标函数、约束条件（数学表达式）、求解结果、灵敏度分析（影子价格和允许范围）。灵敏度分析说明约束松弛的经济含义。",
+        mistakes:["约束方向搞反（≤写成≥）——结果无意义","非线性问题强套线性规划","不做灵敏度分析","忘记非负约束 x ≥ 0"],
+        good:"理论最完善的优化方法；解唯一；灵敏度分析是评委考察理解深度的地方" },
+
+      { name:"整数规划 ILP", tag:"Discrete Optimization", diff:4,
+        when:["决策变量必须是整数（如数量）","0-1规划：是否选择某选项","选址、调度、分配类","背包、覆盖、路径经典问题"],
+        example:"选k个站点使覆盖最大；排班使人力成本最小；货车路径规划",
+        formula:"0-1规划：\n  min/max  cᵀx，xᵢ ∈ {0,1}\n  s.t.  Ax ≤ b\n求解方法：\n  分支定界（Branch & Bound）\n  割平面法（Cutting Plane）\n  现代求解器自动处理（CBC/GLPK）",
+        tools:["PuLP + CBC 求解器（开源免费）","CVXPY + GLPK","scipy.optimize.milp  （新版本）","OR-Tools  （Google，适合大规模）"],
+        paper:"需展示：决策变量（明确整数/0-1性质）、约束构建思路、求解时间、解的可行性验证。大规模问题说明近似求解策略。",
+        mistakes:["忘记声明整数约束——LP和ILP结果可能完全不同","约束不完整——遗漏物理约束","规模大时求解超时——考虑启发式算法","不验证解的可行性"],
+        good:"现代求解器对中等规模（<1000变量）效率很高；大规模时结合遗传算法" },
+
+      { name:"多目标规划", tag:"Pareto Optimal", diff:4,
+        when:["有两个及以上相互冲突的目标","需要给决策者提供一组方案","成本-质量、速度-精度等权衡场景","不存在同时最优所有目标的解"],
+        example:"同时最小化成本和配送时间；权衡能源消耗与产量",
+        formula:"帕累托最优：解x*使得不存在x使所有目标都不差于x*\n加权法：min Σwᵢfᵢ(x)（转化为单目标）\nε-约束法：\n  min f₁(x)\n  s.t. fᵢ(x) ≤ εᵢ（i≠1）\nNSGA-II：遗传算法求帕累托前沿",
+        tools:["CVXPY  （加权法）","scipy.optimize.minimize  （加权法）","pymoo  （专业多目标优化，含NSGA-II）"],
+        paper:"必须展示帕累托前沿图（最重要的图）；说明不同权重下的方案对比；给决策者提供多个帕累托最优解并分析各自适用场景。",
+        mistakes:["只给一个解——多目标答案应该是一条帕累托前沿","加权系数随意设定——需说明权重来源","不展示目标间的权衡关系"],
+        good:"展示帕累托前沿是论文亮点；体现建模深度和对现实问题的理解" },
+
+      { name:"遗传算法 GA", tag:"Metaheuristic", diff:4,
+        when:["精确算法无法在合理时间内求解","搜索空间非常大且非凸","整数规划/组合优化规模过大","需要近似最优解"],
+        example:"大规模路径规划；复杂调度问题；超参数优化",
+        formula:"核心操作：\n选择：轮盘赌或锦标赛选高适应度个体\n交叉：两父代基因片段互换（单点/均匀）\n变异：随机翻转基因位（概率0.01-0.1）\n适应度：将目标函数转化为非负适应度\n终止：最大代数 or 适应度收敛",
+        tools:["deap  库（推荐，灵活）","scipy.optimize.differential_evolution  （差分进化）","pymoo  （统一接口）"],
+        paper:"需展示：种群大小、交叉率、变异率选取依据；收敛曲线（适应度随代数变化）；多次运行结果的均值和方差（证明稳定性）；与精确算法对比。",
+        mistakes:["只运行一次——启发式有随机性，需多次取平均","参数不调——种群大小、变异率影响巨大","适应度函数设计不当","不画收敛曲线"],
+        good:"适合精确算法无法处理的复杂问题；收敛曲线展示优化过程，体现算法的探索效果" },
+
+      { name:"图论与网络流", tag:"Network Optimization", diff:3,
+        when:["问题涉及节点和边的关系","最短路径、最大流、最小生成树","物流、交通、通信网络","传播、影响力分析"],
+        example:"城市地铁最优路径；供应链网络流量最大化；通信网络最小代价连接",
+        formula:"最短路（Dijkstra）：贪心更新最短距离\n  d[v] = min(d[v], d[u]+w(u,v))\n最大流（Ford-Fulkerson）：\n  沿增广路径增加流量直至无增广路\n最小生成树（Kruskal）：\n  按边权排序，贪心选边不成环\n中心性：度、介数、接近中心性",
+        tools:["networkx.shortest_path","networkx.max_flow","networkx.minimum_spanning_tree","networkx.betweenness_centrality","igraph  （百万节点以上更快）"],
+        paper:"需展示：图的构建方法（节点和边的定义）、算法选择依据、关键路径或流量分配结果可视化、网络关键节点分析（中心性）。",
+        mistakes:["不明确图类型（有向/无向/带权）","NetworkX处理大图太慢——用igraph","最大流没指定源节点和汇节点","不可视化图结构"],
+        good:"图可视化是论文亮点；networkx.draw() 直接画图；与现实场景结合紧密" },
+    ]
+  },
+  { key:"动态系统 Dynamics", color:"#1B6B42", lt:"#EAF3DE",
+    desc:"Keywords: evolve over time, propagation, growth/decay, kinetics, simulation",
+    models:[
+      { name:"常微分方程 ODE", tag:"Continuous Dynamics", diff:4,
+        when:["变量随时间连续变化","已知变化率方程","物理/化学/生态学建模","SIR传播、人口增长等"],
+        example:"SIR传染病传播；捕食者-猎物种群动态；RC电路充放电",
+        formula:"标准形式：dy/dt = f(t, y)，y(t₀) = y₀\nRK4数值解法：\n  k₁ = hf(tₙ, yₙ)\n  k₂ = hf(tₙ+h/2, yₙ+k₁/2)\n  k₃ = hf(tₙ+h/2, yₙ+k₂/2)\n  k₄ = hf(tₙ+h, yₙ+k₃)\n  yₙ₊₁ = yₙ + (k₁+2k₂+2k₃+k₄)/6\n稳定性：分析平衡点和特征值",
+        tools:["scipy.integrate.solve_ivp  （推荐，自适应步长）","scipy.integrate.odeint  （老版）","sympy.dsolve  （符号解析解）","matplotlib 画相轨迹"],
+        paper:"需展示：方程推导过程（从物理机制出发）、参数估计方法（curve_fit拟合）、数值解时间演化图、相轨迹图、稳定性分析。",
+        mistakes:["方程列错——先从守恒律推导","参数拍脑袋设定——用scipy.optimize.curve_fit拟合","只画时间序列不画相轨迹","不讨论平衡点稳定性"],
+        good:"推导严谨是论文加分亮点；相轨迹图非常直观；与实测数据对比验证是必要内容" },
+
+      { name:"SIR 传染病模型", tag:"Spreading Dynamics", diff:3,
+        when:["人群分类的传播问题","疾病、信息、舆论传播","评估干预措施效果","估计基本再生数R₀"],
+        example:"新冠传播预测；社交媒体信息扩散分析；疫苗策略评估",
+        formula:"方程组：\n  dS/dt = -βSI/N\n  dI/dt = βSI/N - γI\n  dR/dt = γI\n参数：\n  β：传播率（接触率×感染概率）\n  γ：恢复率（1/平均感染期）\n  N：总人口（常数）\nR₀ = β/γ\n  R₀>1：疫情扩散\n  R₀<1：疫情消退",
+        tools:["scipy.integrate.solve_ivp","scipy.optimize.curve_fit  （参数拟合）","matplotlib 画感染曲线"],
+        paper:"论文核心：R₀估计及流行病学含义、参数从数据中拟合过程、预测曲线与实际数据对比、不同干预策略（改变β或γ）的情景模拟对比。",
+        mistakes:["R₀不计算或不解释——是最重要的输出指标","参数不从数据拟合","不考虑人口异质性","不做干预情景模拟"],
+        good:"代码不到20行但理论深度大；扩展为SEIR可提升论文层次；R₀是核心亮点" },
+
+      { name:"马尔科夫链", tag:"State Transition", diff:3,
+        when:["系统在有限离散状态间转移","未来只依赖当前状态（无记忆性）","长期稳态分析","天气、市场占有率分析"],
+        example:"天气状态转移（晴/阴/雨）；客户留存分析；市场份额预测",
+        formula:"转移矩阵 P（n×n）：Pᵢⱼ=P(Xₜ₊₁=j|Xₜ=i)\n每行之和为1：ΣⱼPᵢⱼ=1\nn步转移：P⁽ⁿ⁾= Pⁿ\n稳态分布 π：\n  πP = π，Σπᵢ = 1\n  求P的左特征向量（特征值=1对应）",
+        tools:["numpy 矩阵乘法（矩阵幂次P**n）","scipy.linalg.eig  （求稳态分布）","手写迭代法"],
+        paper:"需展示：状态定义和转移矩阵（从数据频率估计）、稳态分布及业务含义、从初始状态到稳态的收敛过程图、平均首次返回时间。",
+        mistakes:["转移概率不从数据估计——随意设定说服力差","忘记验证每行之和为1","不计算稳态分布","不满足马尔科夫性仍使用"],
+        good:"稳态分析给出系统长期行为；与Monte Carlo仿真结合可分析随机系统" },
+
+      { name:"元胞自动机 CA", tag:"Spatial Simulation", diff:4,
+        when:["空间局部相互作用产生整体涌现","交通流、城市扩张、火灾蔓延","离散时间和空间的动态系统","需要可视化空间演化过程"],
+        example:"交通流仿真（NaSch模型）；城市土地利用变化；森林火灾蔓延",
+        formula:"基本要素：\n  格网：空间离散化\n  状态集：每个格子可取的状态\n  邻域：Moore（8格）/Von Neumann（4格）\n  转换规则：xᵢ(t+1) = f(邻域状态)\n交通NaSch规则：\n  1. 加速：v←min(v+1, vmax)\n  2. 减速：v←min(v, d-1)\n  3. 随机慢化：v←max(v-1,0)\n  4. 移动：x←x+v",
+        tools:["numpy 二维数组（手写规则）","matplotlib.animation  （制作动画）","scipy.ndimage  （邻域卷积操作）"],
+        paper:"论文亮点：空间演化动画截图序列；关键涌现现象可视化；参数敏感性分析；与宏观微分方程模型的对比。",
+        mistakes:["规则设计无物理依据","边界条件处理不当（周期vs固定边界）","不展示时序快照——CA核心优势是空间可视化","参数多但无敏感性分析"],
+        good:"视觉冲击力强；动画展示能吸引评委眼球；适合空间传播和涌现现象建模" },
+    ]
+  },
+];
+
+// ── Rendering ─────────────────────────────────────────────
+
+function starsHtml(n, max) {
+  let s = '';
+  for (let i = 0; i < max; i++)
+    s += `<span class="${i < n ? 'star-on' : 'star-off'}">★</span>`;
+  return s;
+}
+
+// global tracking: catIdx → modelIdx → panelEl
+let currentOpen = null; // {catIdx, modelIdx}
+
+function render(filterVal) {
+  currentOpen = null;
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+
+  CATS.forEach((cat, ci) => {
+    if (filterVal !== 'all' && filterVal !== ci) return;
+
+    const sec = document.createElement('div');
+    sec.className = 'cat-section';
+
+    // cards HTML
+    const cardsHtml = cat.models.map((m, mi) => `
+      <div class="model-card" style="--ac:${cat.color};--acl:${cat.lt}"
+           id="card-${ci}-${mi}" onclick="onCard(${ci},${mi})">
+        <div class="card-top">
+          <div class="card-bar"></div>
+          <div>
+            <div class="card-name">${m.name}</div>
+            <span class="card-tag">${m.tag}</span>
+            <div class="card-diff">${starsHtml(m.diff,5)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // detail panels HTML (one per model, hidden by default)
+    const panelsHtml = cat.models.map((m, mi) => `
+      <div class="detail-panel" id="panel-${ci}-${mi}" style="--ac:${cat.color};--acl:${cat.lt}">
+        <div class="dp-hero">
+          <div class="dp-bar" style="background:${cat.color}"></div>
+          <div>
+            <div class="dp-title">${m.name} &nbsp;<span style="font-size:13px;font-weight:400;color:var(--muted)">${starsHtml(m.diff,5)}</span></div>
+            <span class="dp-tag">${m.tag}</span>
+          </div>
+          <button class="dp-close" onclick="closePanel(${ci},${mi})">Close ×</button>
+        </div>
+
+        <div class="dp-grid two">
+          <div class="dp-block">
+            <div class="dp-lbl">什么时候用</div>
+            <ul class="dp-txt">${m.when.map(w=>`<li>${w}</li>`).join('')}</ul>
+          </div>
+          <div class="dp-block">
+            <div class="dp-lbl">典型题目场景</div>
+            <div class="dp-txt">${m.example}</div>
+          </div>
+        </div>
+
+        <div class="dp-grid one" style="border-top:1px solid var(--border)">
+          <div class="dp-block full">
+            <div class="dp-lbl">核心公式 / 原理</div>
+            <div class="formula">${m.formula}</div>
+          </div>
+        </div>
+
+        <div class="dp-grid two" style="border-top:1px solid var(--border)">
+          <div class="dp-block">
+            <div class="dp-lbl">Python 工具</div>
+            <div class="dp-txt">${m.tools.map(t=>`<span class="code-pill">${t}</span>`).join('')}</div>
+          </div>
+          <div class="dp-block">
+            <div class="dp-lbl">论文怎么写这一节</div>
+            <div class="dp-txt">${m.paper}</div>
+          </div>
+        </div>
+
+        <div class="dp-grid two" style="border-top:1px solid var(--border)">
+          <div class="warn"><b>⚠ 常见错误：</b><br>${m.mistakes.map(e=>`· ${e}`).join('<br>')}</div>
+          <div class="good"><b>✓ 什么情况下效果最好：</b><br>${m.good}</div>
+        </div>
+      </div>
+    `).join('');
+
+    sec.innerHTML = `
+      <div class="cat-header" onclick="toggleCat(this)">
+        <div class="cat-dot" style="background:${cat.color}"></div>
+        <div class="cat-title">${cat.key}</div>
+        <div class="cat-count">${cat.models.length} models</div>
+        <div class="cat-sub">${cat.desc}</div>
+        <div class="cat-arrow">▾</div>
+      </div>
+      <div class="cat-body">
+        <div class="cards">${cardsHtml}</div>
+        ${panelsHtml}
+      </div>
+    `;
+    container.appendChild(sec);
+  });
+}
+
+function onCard(ci, mi) {
+  const card  = document.getElementById(`card-${ci}-${mi}`);
+  const panel = document.getElementById(`panel-${ci}-${mi}`);
+  const isOpen = card.classList.contains('open');
+
+  // close all
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('open'));
+  document.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('open'));
+  currentOpen = null;
+
+  if (!isOpen) {
+    card.classList.add('open');
+    panel.classList.add('open');
+    currentOpen = {ci, mi};
+    setTimeout(() => panel.scrollIntoView({behavior:'smooth', block:'nearest'}), 60);
+  }
+}
+
+function closePanel(ci, mi) {
+  document.getElementById(`card-${ci}-${mi}`).classList.remove('open');
+  document.getElementById(`panel-${ci}-${mi}`).classList.remove('open');
+  currentOpen = null;
+}
+
+function toggleCat(hdr) {
+  hdr.closest('.cat-section').classList.toggle('collapsed');
+}
+
+function setFilter(val, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render(val);
+}
+
+render('all');
+</script>
+</body>
+</html>
