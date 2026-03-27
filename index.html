@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+html = r'''<!DOCTYPE html>
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
@@ -18,12 +17,21 @@
   --c5:#993C1D;--c5l:#FAECE7;
   --c6:#1B6B42;--c6l:#EAF3DE;
 }
-body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);padding:28px 20px 80px}
-
-.hdr{text-align:center;margin-bottom:28px}
+body.dark{
+  --bg:#181614;--card:#23201D;--border:#3D3731;--text:#F2EDE7;
+  --muted:#B7AEA5;--navy:#D5E0F6;--hover:#2B2723;
+  --c1l:#24384E;--c2l:#332B4D;--c3l:#20352F;--c4l:#3A2F1C;--c5l:#422A23;--c6l:#243225;
+}
+body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);padding:28px 20px 80px;transition:background .2s,color .2s}
+.hdr{text-align:center;margin-bottom:18px}
 .hdr h1{font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px;
   font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
 .hdr p{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+.topbar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 auto 18px;max-width:1100px}
+.topbtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);
+  font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;color:var(--muted)}
+.topbtn:hover{border-color:var(--navy);color:var(--navy);background:var(--hover)}
 
 .filters{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:24px}
 .filter-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);
@@ -35,7 +43,7 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
 .sections{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
 
 /* category */
-.cat-section{background:var(--card);border-radius:12px;border:1.5px solid var(--border);overflow:hidden}
+.cat-section{background:var(--card);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;transition:background .2s,border-color .2s}
 .cat-header{display:flex;align-items:center;gap:12px;padding:14px 20px;cursor:pointer;
   border-bottom:1px solid var(--border);user-select:none}
 .cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
@@ -53,12 +61,19 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
 /* cards */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
 .model-card{border-radius:8px;border:1.5px solid var(--border);background:var(--bg);
-  cursor:pointer;transition:all .18s;overflow:hidden}
+  cursor:pointer;transition:all .18s;overflow:hidden;position:relative}
 .model-card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.model-card::after{
+  content:'';position:absolute;top:0;left:-130%;width:70%;height:100%;
+  background:linear-gradient(110deg,transparent,rgba(255,255,255,.18),transparent);
+  transition:left .55s ease;pointer-events:none
+}
+.model-card:hover::after{left:145%}
 .model-card.open{border-color:var(--ac);background:var(--card);box-shadow:0 6px 20px rgba(0,0,0,.10)}
 .card-top{padding:10px 13px;display:flex;align-items:flex-start;gap:10px}
 .card-bar{width:4px;min-height:36px;border-radius:2px;flex-shrink:0;background:var(--ac)}
 .card-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.35}
+.card-name-en{font-size:10px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace;line-height:1.4}
 .card-tag{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:3px;
   margin-top:4px;display:inline-block;background:var(--acl);color:var(--ac)}
 .card-diff{font-size:9px;color:var(--muted);margin-top:3px;font-family:'JetBrains Mono',monospace}
@@ -74,6 +89,7 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
   display:flex;align-items:flex-start;gap:12px}
 .dp-bar{width:5px;height:48px;border-radius:3px;flex-shrink:0}
 .dp-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.dp-title-en{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:1.5}
 .dp-tag{font-size:10px;font-family:'JetBrains Mono',monospace;padding:2px 8px;
   border-radius:4px;display:inline-block;background:var(--acl);color:var(--ac)}
 .dp-close{margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace;
@@ -94,10 +110,12 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
 .dp-lbl::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac);flex-shrink:0}
 .dp-txt{font-size:12px;color:var(--text);line-height:1.75}
 .dp-txt li{margin-left:14px;margin-bottom:2px}
+.note-mini{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:6px}
 
 .formula{background:#F0F2F5;border-radius:6px;padding:10px 13px;margin-top:6px;
   font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#1A2B4A;
   line-height:1.75;white-space:pre-wrap}
+body.dark .formula{background:#161C22;color:#D9E5F2}
 
 .code-pill{display:inline-block;background:#1E2D3D;color:#A8D8A8;
   font-family:'JetBrains Mono',monospace;font-size:10px;
@@ -109,6 +127,8 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
 .good{padding:12px 15px;background:#F0FBF5;border-left:3px solid #1B6B42;
   font-size:11.5px;color:#1B4A2A;line-height:1.75}
 .good b{font-weight:600}
+body.dark .warn{background:#352B18;color:#F6D38C}
+body.dark .good{background:#1D3323;color:#BCE3C7}
 
 .tip{text-align:center;margin-top:24px;font-size:11px;color:var(--muted);
   font-family:'JetBrains Mono',monospace}
@@ -117,27 +137,109 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);pa
 <body>
 
 <div class="hdr">
-  <h1>Mathematical Modeling — Model Reference</h1>
-  <p>// click any model card to expand · filter by problem type</p>
+  <h1 id="hdr-title">Mathematical Modeling — Model Reference</h1>
+  <p id="hdr-sub">// click any model card to expand · filter by problem type</p>
 </div>
 
-<div class="filters">
-  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
-  <button class="filter-btn" onclick="setFilter(0,this)">预测 Prediction</button>
-  <button class="filter-btn" onclick="setFilter(1,this)">分类 Classification</button>
-  <button class="filter-btn" onclick="setFilter(2,this)">统计分析 Statistics</button>
-  <button class="filter-btn" onclick="setFilter(3,this)">评价 Evaluation</button>
-  <button class="filter-btn" onclick="setFilter(4,this)">优化 Optimization</button>
-  <button class="filter-btn" onclick="setFilter(5,this)">动态系统 Dynamics</button>
+<div class="topbar">
+  <button class="topbtn" onclick="toggleLang()" id="lang-btn">中 / EN</button>
+  <button class="topbtn" onclick="toggleTheme()" id="theme-btn">Dark / Light</button>
 </div>
+
+<div class="filters" id="filters"></div>
 
 <div class="sections" id="sections"></div>
-<div class="tip">// click category header to collapse · click card again to close</div>
+<div class="tip" id="bottom-tip">// click category header to collapse · click card again to close</div>
 
 <script>
+const UI = {
+  zh:{
+    title:'数模模型参考页',
+    sub:'// 点击模型卡片展开 · 可按题型筛选',
+    tip:'// 点击分类标题收起 · 再次点击卡片关闭',
+    langBtn:'中 / EN',
+    themeBtn:'Dark / Light',
+    all:'全部 All',
+    close:'关闭 ×',
+    models:'个模型',
+    labels:{
+      when:'什么时候用',
+      example:'典型题目场景',
+      formula:'核心公式 / 原理',
+      tools:'Python 工具',
+      paper:'论文怎么写这一节',
+      mistakes:'⚠ 常见错误：',
+      good:'✓ 什么情况下效果最好：'
+    },
+    zhNote:'当前为中文说明',
+    enNote:'当前为英文界面，详细内容保留原始中文以保持原项目内容不变'
+  },
+  en:{
+    title:'Mathematical Modeling — Model Reference',
+    sub:'// click any model card to expand · filter by problem type',
+    tip:'// click category header to collapse · click card again to close',
+    langBtn:'EN / 中',
+    themeBtn:'Dark / Light',
+    all:'All',
+    close:'Close ×',
+    models:'models',
+    labels:{
+      when:'When to Use',
+      example:'Typical Scenario',
+      formula:'Core Formula / Principle',
+      tools:'Python Tools',
+      paper:'How to Write It in the Paper',
+      mistakes:'⚠ Common Mistakes:',
+      good:'✓ When It Works Best:'
+    },
+    zhNote:'Chinese detail content is shown in the original version',
+    enNote:'English interface enabled · detail content stays close to the original Chinese version'
+  }
+};
+
+const FILTERS = [
+  {id:'all', zh:'全部', en:'All'},
+  {id:0, zh:'预测', en:'Prediction'},
+  {id:1, zh:'分类', en:'Classification'},
+  {id:2, zh:'统计分析', en:'Statistics'},
+  {id:3, zh:'评价', en:'Evaluation'},
+  {id:4, zh:'优化', en:'Optimization'},
+  {id:5, zh:'动态系统', en:'Dynamics'}
+];
+
+const MODEL_NAME_EN = {
+  "线性回归":"Linear Regression",
+  "ARIMA 时间序列":"ARIMA Time Series",
+  "灰色预测 GM(1,1)":"Grey Prediction GM(1,1)",
+  "随机森林回归":"Random Forest Regression",
+  "XGBoost / LightGBM":"XGBoost / LightGBM",
+  "逻辑回归":"Logistic Regression",
+  "随机森林分类":"Random Forest Classification",
+  "SVM 支持向量机":"Support Vector Machine",
+  "k-means 聚类":"k-means Clustering",
+  "相关分析":"Correlation Analysis",
+  "假设检验":"Hypothesis Testing",
+  "多元回归分析":"Multiple Regression Analysis",
+  "PCA 主成分分析":"PCA",
+  "层次分析法 AHP":"AHP",
+  "TOPSIS":"TOPSIS",
+  "熵权法":"Entropy Weight Method",
+  "模糊综合评价":"Fuzzy Comprehensive Evaluation",
+  "线性规划 LP":"Linear Programming",
+  "整数规划 ILP":"Integer Programming",
+  "多目标规划":"Multi-objective Programming",
+  "遗传算法 GA":"Genetic Algorithm",
+  "图论与网络流":"Graph Theory & Network Flow",
+  "常微分方程 ODE":"Ordinary Differential Equations",
+  "SIR 传染病模型":"SIR Epidemic Model",
+  "马尔科夫链":"Markov Chain",
+  "元胞自动机 CA":"Cellular Automata"
+};
+
 const CATS = [
-  { key:"预测 Prediction", color:"#1E5FAD", lt:"#E6F1FB",
-    desc:"Keywords: predict, estimate, trend, future value",
+  { zh:"预测", en:"Prediction", color:"#1E5FAD", lt:"#E6F1FB",
+    descZh:"关键词：预测、估计、趋势、未来值",
+    descEn:"Keywords: predict, estimate, trend, future value",
     models:[
       { name:"线性回归", tag:"Regression", diff:2,
         when:["自变量与因变量呈线性关系","特征数量较少（< 10 列）","需要解释各因素的影响程度","作为复杂模型的基线对比"],
@@ -185,8 +287,9 @@ const CATS = [
         good:"竞赛中表现最优的方法之一；用SHAP库输出特征贡献图解决可解释性问题" },
     ]
   },
-  { key:"分类 Classification", color:"#5B3FA0", lt:"#EEEDFE",
-    desc:"Keywords: classify, identify, belong to category, is/not",
+  { zh:"分类", en:"Classification", color:"#5B3FA0", lt:"#EEEDFE",
+    descZh:"关键词：分类、识别、属于哪一类、是否",
+    descEn:"Keywords: classify, identify, belong to category, is / not",
     models:[
       { name:"逻辑回归", tag:"Binary / Multi-class", diff:2,
         when:["二分类或多分类问题","要求输出概率值","需要解释各特征的影响","作为基线模型"],
@@ -225,8 +328,9 @@ const CATS = [
         good:"简单高效；结果直观；与 TOPSIS/AHP 结合可做分类后再评价" },
     ]
   },
-  { key:"统计分析 Statistics", color:"#0D7A6A", lt:"#E1F5EE",
-    desc:"Keywords: influence factors, test difference, correlation, significance",
+  { zh:"统计分析", en:"Statistics", color:"#0D7A6A", lt:"#E1F5EE",
+    descZh:"关键词：影响因素、差异检验、相关性、显著性",
+    descEn:"Keywords: influence factors, test difference, correlation, significance",
     models:[
       { name:"相关分析", tag:"Correlation", diff:1,
         when:["探索变量之间是否有线性关系","EDA阶段初步筛选特征","找出可能的多重共线性","判断是否需要处理相关特征"],
@@ -265,8 +369,9 @@ const CATS = [
         good:"与聚类、回归配合效果极好；2D/3D散点图是论文可视化亮点" },
     ]
   },
-  { key:"评价 Evaluation", color:"#C47A1A", lt:"#FAEEDA",
-    desc:"Keywords: evaluate, rank, select best, multi-indicator, weight",
+  { zh:"评价", en:"Evaluation", color:"#C47A1A", lt:"#FAEEDA",
+    descZh:"关键词：评价、排序、择优、多指标、赋权",
+    descEn:"Keywords: evaluate, rank, select best, multi-indicator, weight",
     models:[
       { name:"层次分析法 AHP", tag:"Subjective Weight", diff:3,
         when:["指标体系有层次结构（目标-准则-指标）","需要专家主观判断确定权重","指标难以客观量化比较","与TOPSIS配合使用"],
@@ -305,8 +410,9 @@ const CATS = [
         good:"适合定性指标较多的评价场景；与AHP结合确定权重；隶属度函数设计可作为创新点" },
     ]
   },
-  { key:"优化 Optimization", color:"#993C1D", lt:"#FAECE7",
-    desc:"Keywords: optimal, maximize, minimize, schedule, allocate, plan",
+  { zh:"优化", en:"Optimization", color:"#993C1D", lt:"#FAECE7",
+    descZh:"关键词：最优、最大化、最小化、调度、分配、规划",
+    descEn:"Keywords: optimal, maximize, minimize, schedule, allocate, plan",
     models:[
       { name:"线性规划 LP", tag:"Continuous Optimization", diff:2,
         when:["目标函数和全部约束都是线性","决策变量是连续值","有明确目标和约束条件","数模中最基础的优化模型"],
@@ -354,8 +460,9 @@ const CATS = [
         good:"图可视化是论文亮点；networkx.draw() 直接画图；与现实场景结合紧密" },
     ]
   },
-  { key:"动态系统 Dynamics", color:"#1B6B42", lt:"#EAF3DE",
-    desc:"Keywords: evolve over time, propagation, growth/decay, kinetics, simulation",
+  { zh:"动态系统", en:"Dynamics", color:"#1B6B42", lt:"#EAF3DE",
+    descZh:"关键词：随时间演化、传播、增长/衰减、动力学、仿真",
+    descEn:"Keywords: evolve over time, propagation, growth / decay, kinetics, simulation",
     models:[
       { name:"常微分方程 ODE", tag:"Continuous Dynamics", diff:4,
         when:["变量随时间连续变化","已知变化率方程","物理/化学/生态学建模","SIR传播、人口增长等"],
@@ -396,17 +503,30 @@ const CATS = [
   },
 ];
 
-// ── Rendering ─────────────────────────────────────────────
+let currentLang = 'en';
+let currentFilter = 'all';
+let currentOpen = null; // {ci, mi}
 
 function starsHtml(n, max) {
   let s = '';
-  for (let i = 0; i < max; i++)
-    s += `<span class="${i < n ? 'star-on' : 'star-off'}">★</span>`;
+  for (let i = 0; i < max; i++) s += `<span class="${i < n ? 'star-on' : 'star-off'}">★</span>`;
   return s;
 }
 
-// global tracking: catIdx → modelIdx → panelEl
-let currentOpen = null; // {catIdx, modelIdx}
+function modelName(m){
+  return currentLang === 'zh' ? m.name : (MODEL_NAME_EN[m.name] || m.name);
+}
+
+function renderFilters(active){
+  const wrap = document.getElementById('filters');
+  wrap.innerHTML = FILTERS.map((f, idx) => {
+    const label = currentLang === 'zh'
+      ? (f.id === 'all' ? `${f.zh} ${f.en}` : `${f.zh} ${f.en}`)
+      : (f.id === 'all' ? f.en : f.en);
+    const isActive = String(active) === String(f.id);
+    return `<button class="filter-btn ${isActive ? 'active' : ''}" onclick="setFilter('${f.id}', this)">${label}</button>`;
+  }).join('');
+}
 
 function render(filterVal) {
   currentOpen = null;
@@ -414,19 +534,18 @@ function render(filterVal) {
   container.innerHTML = '';
 
   CATS.forEach((cat, ci) => {
-    if (filterVal !== 'all' && filterVal !== ci) return;
+    if (filterVal !== 'all' && Number(filterVal) !== ci) return;
 
     const sec = document.createElement('div');
     sec.className = 'cat-section';
 
-    // cards HTML
     const cardsHtml = cat.models.map((m, mi) => `
-      <div class="model-card" style="--ac:${cat.color};--acl:${cat.lt}"
-           id="card-${ci}-${mi}" onclick="onCard(${ci},${mi})">
+      <div class="model-card" style="--ac:${cat.color};--acl:${cat.lt}" id="card-${ci}-${mi}" onclick="onCard(${ci},${mi})">
         <div class="card-top">
           <div class="card-bar"></div>
           <div>
-            <div class="card-name">${m.name}</div>
+            <div class="card-name">${modelName(m)}</div>
+            <div class="card-name-en">${currentLang === 'zh' ? (MODEL_NAME_EN[m.name] || m.name) : m.name}</div>
             <span class="card-tag">${m.tag}</span>
             <div class="card-diff">${starsHtml(m.diff,5)}</div>
           </div>
@@ -434,50 +553,51 @@ function render(filterVal) {
       </div>
     `).join('');
 
-    // detail panels HTML (one per model, hidden by default)
     const panelsHtml = cat.models.map((m, mi) => `
       <div class="detail-panel" id="panel-${ci}-${mi}" style="--ac:${cat.color};--acl:${cat.lt}">
         <div class="dp-hero">
           <div class="dp-bar" style="background:${cat.color}"></div>
           <div>
-            <div class="dp-title">${m.name} &nbsp;<span style="font-size:13px;font-weight:400;color:var(--muted)">${starsHtml(m.diff,5)}</span></div>
+            <div class="dp-title">${modelName(m)}</div>
+            <div class="dp-title-en">${currentLang === 'zh' ? (MODEL_NAME_EN[m.name] || m.name) : m.name}</div>
             <span class="dp-tag">${m.tag}</span>
           </div>
-          <button class="dp-close" onclick="closePanel(${ci},${mi})">Close ×</button>
+          <button class="dp-close" onclick="closePanel(${ci},${mi});event.stopPropagation();">${UI[currentLang].close}</button>
         </div>
 
         <div class="dp-grid two">
           <div class="dp-block">
-            <div class="dp-lbl">什么时候用</div>
+            <div class="dp-lbl">${UI[currentLang].labels.when}</div>
             <ul class="dp-txt">${m.when.map(w=>`<li>${w}</li>`).join('')}</ul>
+            <div class="note-mini">${currentLang === 'zh' ? UI.zh.zhNote : UI.en.enNote}</div>
           </div>
           <div class="dp-block">
-            <div class="dp-lbl">典型题目场景</div>
+            <div class="dp-lbl">${UI[currentLang].labels.example}</div>
             <div class="dp-txt">${m.example}</div>
           </div>
         </div>
 
         <div class="dp-grid one" style="border-top:1px solid var(--border)">
           <div class="dp-block full">
-            <div class="dp-lbl">核心公式 / 原理</div>
+            <div class="dp-lbl">${UI[currentLang].labels.formula}</div>
             <div class="formula">${m.formula}</div>
           </div>
         </div>
 
         <div class="dp-grid two" style="border-top:1px solid var(--border)">
           <div class="dp-block">
-            <div class="dp-lbl">Python 工具</div>
+            <div class="dp-lbl">${UI[currentLang].labels.tools}</div>
             <div class="dp-txt">${m.tools.map(t=>`<span class="code-pill">${t}</span>`).join('')}</div>
           </div>
           <div class="dp-block">
-            <div class="dp-lbl">论文怎么写这一节</div>
+            <div class="dp-lbl">${UI[currentLang].labels.paper}</div>
             <div class="dp-txt">${m.paper}</div>
           </div>
         </div>
 
         <div class="dp-grid two" style="border-top:1px solid var(--border)">
-          <div class="warn"><b>⚠ 常见错误：</b><br>${m.mistakes.map(e=>`· ${e}`).join('<br>')}</div>
-          <div class="good"><b>✓ 什么情况下效果最好：</b><br>${m.good}</div>
+          <div class="warn"><b>${UI[currentLang].labels.mistakes}</b><br>${m.mistakes.map(e=>`· ${e}`).join('<br>')}</div>
+          <div class="good"><b>${UI[currentLang].labels.good}</b><br>${m.good}</div>
         </div>
       </div>
     `).join('');
@@ -485,9 +605,9 @@ function render(filterVal) {
     sec.innerHTML = `
       <div class="cat-header" onclick="toggleCat(this)">
         <div class="cat-dot" style="background:${cat.color}"></div>
-        <div class="cat-title">${cat.key}</div>
-        <div class="cat-count">${cat.models.length} models</div>
-        <div class="cat-sub">${cat.desc}</div>
+        <div class="cat-title">${currentLang === 'zh' ? `${cat.zh} ${cat.en}` : cat.en}</div>
+        <div class="cat-count">${cat.models.length} ${UI[currentLang].models}</div>
+        <div class="cat-sub">${currentLang === 'zh' ? cat.descZh : cat.descEn}</div>
         <div class="cat-arrow">▾</div>
       </div>
       <div class="cat-body">
@@ -504,7 +624,6 @@ function onCard(ci, mi) {
   const panel = document.getElementById(`panel-${ci}-${mi}`);
   const isOpen = card.classList.contains('open');
 
-  // close all
   document.querySelectorAll('.model-card').forEach(c => c.classList.remove('open'));
   document.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('open'));
   currentOpen = null;
@@ -528,12 +647,38 @@ function toggleCat(hdr) {
 }
 
 function setFilter(val, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render(val);
+  currentFilter = val === 'all' ? 'all' : Number(val);
+  renderFilters(currentFilter);
+  render(currentFilter);
 }
 
+function toggleLang(){
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  applyUI();
+  renderFilters(currentFilter);
+  render(currentFilter);
+}
+
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+}
+
+function applyUI(){
+  document.getElementById('hdr-title').textContent = UI[currentLang].title;
+  document.getElementById('hdr-sub').textContent = UI[currentLang].sub;
+  document.getElementById('lang-btn').textContent = UI[currentLang].langBtn;
+  document.getElementById('theme-btn').textContent = UI[currentLang].themeBtn;
+  document.getElementById('bottom-tip').textContent = UI[currentLang].tip;
+}
+
+applyUI();
+renderFilters('all');
 render('all');
 </script>
 </body>
 </html>
+'''
+path = "/mnt/data/modelguide_updated_bilingual_dark.html"
+with open(path, "w", encoding="utf-8") as f:
+    f.write(html)
+print(f"Saved to {path}")
